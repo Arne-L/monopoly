@@ -18,12 +18,7 @@ class Railroad(Tile):
         super().__init__()
 
 
-class Chance(Tile):
-    def __init__(self):
-        super().__init__()
-
-
-class IncomeTax(Tile):
+class Card(Tile):
     def __init__(self):
         super().__init__()
 
