@@ -9,6 +9,9 @@ class Board:
     def get_tile_at(self, index: int) -> Tile:
         assert 0 <= index < len(self.tiles), f"The given tile index {index} falls outside the board ranging from 0 to {len(self.tiles) - 1}"
         return self.tiles[index]
+    
+    def __len__(self):
+        return len(self.tiles)
 
     def _load_tiles(self):
         with open("board.json", "r") as file:
