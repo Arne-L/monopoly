@@ -31,11 +31,11 @@ class Board:
                                               hotel_cost=tile["hotel_cost"], 
                                               mortgage_value=tile["mortgage_value"]))
                 elif tile["type"] == "utility":
-                    self.tiles.append(Utility(name=tile["name"], price=tile["price"]))
+                    self.tiles.append(Utility(name=tile["name"]))
                 elif tile["type"] == "railroad":
-                    self.tiles.append(Railroad(name=tile["name"], price=tile["price"]))
+                    self.tiles.append(Railroad(name=tile["name"]))
                 elif tile["type"] == "card":
-                    self.tiles.append(Card(name=tile["name"], card_type=tile["card_type"], action=tile["action"]))
+                    self.tiles.append(Card(name=tile["name"], card_type=tile["card_type"]))
                 elif tile["type"] == "go":
                     self.tiles.append(Go(name=tile["name"]))
                 elif tile["type"] == "jail":

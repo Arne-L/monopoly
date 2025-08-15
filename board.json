@@ -16,7 +16,13 @@
         "hotel_cost": 50,
         "mortgage_value": 30
     },
-    { "name": "Community Chest", "position": 2, "type": "card", "card_type": "community_chest", "action": {} },
+    {
+        "name": "Community Chest",
+        "position": 2,
+        "type": "card",
+        "card_type": "chance",
+        "action": {}
+    },
     {
         "name": "Baltic Avenue",
         "position": 3,
@@ -37,6 +43,7 @@
         "name": "Income Tax",
         "position": 4,
         "type": "card",
+        "card_type": "income_tax",
         "action": {}
     },
     {
@@ -67,7 +74,13 @@
         "hotel_cost": 50,
         "mortgage_value": 50
     },
-    { "name": "Chance", "position": 7, "type": "card", "card_type": "chance", "action": {} },
+    {
+        "name": "Chance",
+        "position": 7,
+        "type": "card",
+        "card_type": "chance",
+        "action": {}
+    },
     {
         "name": "Vermont Avenue",
         "position": 8,
@@ -187,7 +200,13 @@
         "hotel_cost": 100,
         "mortgage_value": 90
     },
-    { "name": "Community Chest", "position": 17, "type": "card", "card_type": "chance", "action": {} },
+    {
+        "name": "Community Chest",
+        "position": 17,
+        "type": "card",
+        "card_type": "chance",
+        "action": {}
+    },
     {
         "name": "Tennessee Avenue",
         "position": 18,
@@ -237,7 +256,13 @@
         "hotel_cost": 150,
         "mortgage_value": 110
     },
-    { "name": "Chance", "position": 22, "type": "card", "card_type": "chance", "action": {} },
+    {
+        "name": "Chance",
+        "position": 22,
+        "type": "card",
+        "card_type": "chance",
+        "action": {}
+    },
     {
         "name": "Indiana Avenue",
         "position": 23,
@@ -373,7 +398,13 @@
         "hotel_cost": 200,
         "mortgage_value": 150
     },
-    { "name": "Community Chest", "position": 33, "type": "card", "card_type": "chance", "action": {} },
+    {
+        "name": "Community Chest",
+        "position": 33,
+        "type": "card",
+        "card_type": "chance",
+        "action": {}
+    },
     {
         "name": "Pennsylvania Avenue",
         "position": 34,
@@ -402,7 +433,13 @@
         "rent_four_stations": 200,
         "mortgage_value": 100
     },
-    { "name": "Chance", "position": 36, "type": "chance" },
+    {
+        "name": "Chance",
+        "position": 36,
+        "type": "card",
+        "card_type": "chance",
+        "action": {}
+    },
     {
         "name": "Park Place",
         "position": 37,
@@ -423,6 +460,7 @@
         "name": "Luxury Tax",
         "position": 38,
         "type": "card",
+        "card_type": "income_tax",
         "action": {}
     },
     {
