@@ -1,10 +1,14 @@
 import json
-from entities.tile import Street, Utility, Railroad, Card, Go, Jail, FreeParking, GoToJail
+from entities.tile import Street, Utility, Railroad, Card, Go, Jail, FreeParking, GoToJail, Tile
 
 class Board:
     def __init__(self):
-        self.tiles = []
+        self.tiles: list[Tile] = []
         self._load_tiles()
+
+    def get_tile_at(self, index: int) -> Tile:
+        assert 0 <= index < len(self.tiles), f"The given tile index {index} falls outside the board ranging from 0 to {len(self.tiles) - 1}"
+        return self.tiles[index]
 
     def _load_tiles(self):
         with open("board.json", "r") as file:
