@@ -1,5 +1,5 @@
 import json
-from entities.tile import Street, Utility, Railroad, Card, Go, Jail, FreeParking, GoToJail, Tile
+from entities.tile import Street, Utility, Railroad, CardTile, Go, Jail, FreeParking, GoToJail, Tile, BuyableTile
 
 class Board:
     def __init__(self):
@@ -9,6 +9,9 @@ class Board:
     def get_tile_at(self, index: int) -> Tile:
         assert 0 <= index < len(self.tiles), f"The given tile index {index} falls outside the board ranging from 0 to {len(self.tiles) - 1}"
         return self.tiles[index]
+    
+    def get_tiles_of(self, player_id: int) -> list[BuyableTile]:
+        return [tile for tile in self.tiles if isinstance(tile, BuyableTile) and tile.owner_id == player_id]
     
     def __len__(self):
         return len(self.tiles)
@@ -38,11 +41,11 @@ class Board:
                                               hotel_cost=tile["hotel_cost"], 
                                               mortgage_value=tile["mortgage_value"]))
                 elif tile["type"] == "utility":
-                    self.tiles.append(Utility(name=tile["name"]))
+                    self.tiles.append(Utility(name=tile["name"], land_value=tile["land_value"], mortgage_value=tile["mortgage_value"]))
                 elif tile["type"] == "railroad":
-                    self.tiles.append(Railroad(name=tile["name"]))
+                    self.tiles.append(Railroad(name=tile["name"], land_value=tile["land_value"], mortgage_value=tile["mortgage_value"]))
                 elif tile["type"] == "card":
-                    self.tiles.append(Card(name=tile["name"], card_type=tile["card_type"]))
+                    self.tiles.append(CardTile(name=tile["name"], card_type=tile["card_type"]))
                 elif tile["type"] == "go":
                     self.tiles.append(Go(name=tile["name"]))
                 elif tile["type"] == "jail":

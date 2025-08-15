@@ -15,7 +15,7 @@ class Monopoly:
         nb_players = int(input("The number of players (default 2): ") or DEFAULT_NB_OF_PLAYERS)
         for i in range(nb_players):
             player_name = input(f"Enter name for player {i + 1}: ")
-            self.players.append(Player(player_name, DEFAULT_BALANCE))
+            self.players.append(Player(player_name, DEFAULT_BALANCE, i))
         self.die = Die()
         print(f"Game starting with {nb_players} players ...")
         self._game_loop()
@@ -51,6 +51,16 @@ class Monopoly:
             self.turn += 1
         # TODO: who is the winner & their score
         print("Game has ended!")
+        scoreboard = self.calc_score()
+        print("The following scores where achieved:")
+        for name, score in scoreboard.items():
+            print(f"{name}: {score}")
+        (name, _) = max(scoreboard.items(), key=lambda pair: pair[1])
+        print(f"{name} has won the game!")
 
     def get_current_player(self) -> Player:
         return self.players[self.turn % len(self.players)]
+    
+    def calc_score(self) -> dict[str, int]:
+        assert self.board is not None, "Board has not yet been initialized"
+        return {p.name: p.get_score(self.board) for p in self.players}

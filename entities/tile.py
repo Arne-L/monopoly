@@ -3,7 +3,22 @@ class Tile:
         self.name = name
 
 
-class Street(Tile):
+class BuyableTile(Tile):
+    def __init__(self, name: str, land_value: int, mortgage_value: int, owner_id: int | None = None):
+        super().__init__(name)
+        self.owner_id = owner_id
+        self.is_mortgaged = False
+        self.land_value = land_value
+        self.mortgage_value = mortgage_value
+
+    def get_current_value(self):
+        if self.is_mortgaged:
+            return self.mortgage_value
+        else:
+            return self.land_value
+
+
+class Street(BuyableTile):
     def __init__(
         self,
         name: str,
@@ -19,9 +34,8 @@ class Street(Tile):
         hotel_cost: int,
         mortgage_value: int,
     ):
-        super().__init__(name)
+        super().__init__(name, land_value=land_value, mortgage_value=mortgage_value)
         self.color = color
-        self.land_value = land_value
         self.base_rent = base_rent
         self.single_home_rent = single_home_rent
         self.double_home_rent = double_home_rent
@@ -30,20 +44,27 @@ class Street(Tile):
         self.hotel_rent = hotel_rent
         self.home_cost = home_cost
         self.hotel_cost = hotel_cost
-        self.mortgage_value = mortgage_value
+        self.nb_of_homes = 0
+        self.nb_of_hotels = 0
+
+    def get_current_value(self):
+        if self.is_mortgaged:
+            return self.mortgage_value
+        else:
+            return self.land_value + self.home_cost * self.nb_of_homes + self.hotel_cost * self.nb_of_hotels
 
 
-class Utility(Tile):
-    def __init__(self, name: str):
-        super().__init__(name)
+class Utility(BuyableTile):
+    def __init__(self, name: str, land_value: int, mortgage_value: int):
+        super().__init__(name, land_value=land_value, mortgage_value=mortgage_value)
 
 
-class Railroad(Tile):
-    def __init__(self, name: str):
-        super().__init__(name)
+class Railroad(BuyableTile):
+    def __init__(self, name: str, land_value: int, mortgage_value: int):
+        super().__init__(name, land_value=land_value, mortgage_value=mortgage_value)
 
 
-class Card(Tile):
+class CardTile(Tile):
     def __init__(self, name: str, card_type: str):
         super().__init__(name)
         self.card_type = card_type
