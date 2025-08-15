@@ -1,5 +1,5 @@
 import json
-from tile import Street, Utility, Railroad, Card, Go, Jail, FreeParking, GoToJail
+from entities.tile import Street, Utility, Railroad, Card, Go, Jail, FreeParking, GoToJail
 
 class Board:
     def __init__(self):
