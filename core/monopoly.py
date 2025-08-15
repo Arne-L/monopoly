@@ -3,8 +3,11 @@ from entities.player import Player
 from entities.die import Die
 from settings import DEFAULT_NB_OF_PLAYERS, DEFAULT_BALANCE
 
+
 class Monopoly:
-    def __init__(self, ):
+    def __init__(
+        self,
+    ):
         self.players: list[Player] = []
         self.turn = 0
         self.board = None
@@ -12,7 +15,9 @@ class Monopoly:
     def start_game(self):
         print("Starting the game ...")
         self.board = Board()
-        nb_players = int(input("The number of players (default 2): ") or DEFAULT_NB_OF_PLAYERS)
+        nb_players = int(
+            input("The number of players (default 2): ") or DEFAULT_NB_OF_PLAYERS
+        )
         for i in range(nb_players):
             player_name = input(f"Enter name for player {i + 1}: ")
             self.players.append(Player(player_name, DEFAULT_BALANCE, i))
@@ -44,10 +49,14 @@ class Monopoly:
                 # Throw the dices
                 dice_total = self.die.throw_multiple(2)
                 # Next tile
-                new_tile = self.board.get_tile_at((current_player.position + dice_total) % len(self.board))
-                print(f"The total of the dices is {dice_total}, moving towards {new_tile.name}")
+                new_tile = self.board.get_tile_at(
+                    (current_player.position + dice_total) % len(self.board)
+                )
+                print(
+                    f"The total of the dices is {dice_total}, moving towards {new_tile.name}"
+                )
                 # TODO: Check for any events (passing over go, option to buy, check against balance etc)
-            
+
             self.turn += 1
         # TODO: who is the winner & their score
         print("Game has ended!")
@@ -60,7 +69,7 @@ class Monopoly:
 
     def get_current_player(self) -> Player:
         return self.players[self.turn % len(self.players)]
-    
+
     def calc_score(self) -> dict[str, int]:
         assert self.board is not None, "Board has not yet been initialized"
         return {p.name: p.get_score(self.board) for p in self.players}
