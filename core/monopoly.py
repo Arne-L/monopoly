@@ -1,5 +1,5 @@
 from core.board import Board
-from entities.player import Player
+from entities.player import Player, PrisonStatus
 from entities.die import Die
 from settings import DEFAULT_NB_OF_PLAYERS, DEFAULT_BALANCE, DEFAULT_PASSING_GO_REWARD
 from enum import Enum, auto
@@ -103,15 +103,24 @@ class Monopoly:
             case State.START_TURN:
                 current_player = self.get_current_player()
                 current_tile = current_player.get_current_tile(self.board)
+
+                in_prison, prison_turns_left = current_player.is_in_prison()
                 print(
                     f"""
-                    |++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-                    | Player: {current_player.name}
-                    | Balance: {current_player.balance}
-                    | Current tile: {current_tile.name}
-                    |++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-                    """
+|++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+| Player: {current_player.name}
+| Balance: {current_player.balance}
+| Current tile: {current_tile.name}
+| Prison turns left: {prison_turns_left}
+|++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+"""
                 )
+
+                if in_prison:
+                    options = PrisonStatus.release_options(current_player)
+                    prison_option = int(input(f"Choose an option to get out of jail: \n{"\n".join(map(lambda x: x[0], options))}\nOption (number): "))
+                    options[prison_option - 1][1]()
+
                 action = input("Press any key to continue or type 'stop' to forfeit\n")
 
                 if action == "stop":
