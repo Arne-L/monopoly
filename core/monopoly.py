@@ -128,14 +128,16 @@ class Monopoly:
                 new_position = old_position + dice_total
                 # Check passes by start / go
                 nb_of_go_passes = new_position // len(self.board)
-                # Set new position & balance
-                current_player.position = new_position % len(self.board)
-                current_player.balance += nb_of_go_passes * DEFAULT_PASSING_GO_REWARD
 
                 # Next tile
                 new_tile = self.board.get_tile_at(
                     (current_player.position + dice_total) % len(self.board)
                 )
+
+                # Set new position & balance
+                current_player.position = new_position % len(self.board)
+                current_player.balance += nb_of_go_passes * DEFAULT_PASSING_GO_REWARD
+
                 print(
                     f"The total of the dices is {dice_total}, moving towards {new_tile.name}"
                 )
@@ -156,7 +158,6 @@ class Monopoly:
                 return State.STOP
             case _:
                 raise ValueError(f"The provided game state {state} is has not been recognized as an existing state.")
-
 
     def _game_loop(self):
         assert self.board is not None, "Board has not yet been initialized"
