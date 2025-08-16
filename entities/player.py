@@ -3,10 +3,10 @@ from core.board import Board
 
 class Player:
     def __init__(self, name: str, balance: int, id: int):
-        self.name = name
-        self.balance = balance
-        self.position = 0
-        self.id = id
+        self.name: str = name
+        self.balance: int = balance
+        self.position: int = 0
+        self.id: int = id
 
     def get_current_tile(self, board: Board) -> Tile:
         return board.get_tile_at(self.position)
