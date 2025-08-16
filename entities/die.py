@@ -10,3 +10,7 @@ class Die:
 
     def throw_sum(self, dies: int = 2) -> int:
         return sum(self.throw(dies))
+    
+    @staticmethod
+    def all_equal_values(dice: list[int]) -> bool:
+        return len(set(dice)) == 1

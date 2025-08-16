@@ -3,6 +3,7 @@ from entities.cards import Card
 from entities.die import Die
 from core.board import Board
 from typing import Callable
+from settings import PRISON_TILE
 
 
 class Player:
@@ -19,6 +20,10 @@ class Player:
 
     def is_in_prison(self) -> tuple[bool, int]:
         return self.prison_status.is_in_prison()
+    
+    def put_in_prison(self):
+        self.position = PRISON_TILE
+        self.prison_status.imprisonment()
 
     def get_score(self, board: Board) -> int:
         return self.balance + sum(
@@ -73,7 +78,7 @@ class PrisonStatus:
 
         if prison_status.turns_left > 0:
             def roll_dices() -> bool:
-                if len(set(Die().throw(2))) == 1:
+                if Die.all_equal_values(Die().throw()):
                     player.prison_status.release()
                     return True
                 return False

@@ -6,3 +6,5 @@ DEFAULT_BALANCE=1500
 DEFAULT_JAIL_FEE=50
 # Passing Go reward
 DEFAULT_PASSING_GO_REWARD=200
+# The tile to use as the prison
+PRISON_TILE=10

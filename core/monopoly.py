@@ -76,10 +76,11 @@ class State(Enum):
 
 class Monopoly:
     def __init__(
-        self,
+        self
     ):
         self.players: list[Player] = []
         self.turn: int = 0
+        self.doubles: int = 0
 
     def start_game(self):
         state = State.START_GAME
@@ -141,7 +142,14 @@ class Monopoly:
             case State.ROLL_DICE:
                 current_player = self.get_current_player()
                 # Throw the dices
-                dice_total = self.die.throw_sum(2)
+                dice_roll = self.die.throw(2)
+
+                if Die.all_equal_values(dice_roll):
+                    self.doubles += 1
+                    if self.doubles >= 3:
+                        current_player.put_in_prison()
+
+                dice_total = sum(dice_roll)
                 # Positions
                 old_position = current_player.position
                 new_position = old_position + dice_total
@@ -163,6 +171,7 @@ class Monopoly:
                 return State.END_TURN  # TODO: Update with remaining steps
             case State.END_TURN:
                 self.turn += 1
+                self.doubles = 0
                 return State.START_TURN
             case State.END_GAME:
                 print("Game has ended!")
