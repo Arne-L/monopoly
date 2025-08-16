@@ -1,4 +1,5 @@
 from core.board import Board
+from interface.iinterface import IInterface
 from entities.player import Player, PrisonStatus
 from entities.die import Die
 from settings import DEFAULT_NB_OF_PLAYERS, DEFAULT_BALANCE, DEFAULT_PASSING_GO_REWARD
@@ -75,12 +76,13 @@ class State(Enum):
 
 
 class Monopoly:
-    def __init__(
-        self
-    ):
+    def __init__(self, interface: IInterface):
+        self.interface = interface
         self.players: list[Player] = []
         self.turn: int = 0
         self.doubles: int = 0
+        self.die = Die()
+        self.board = Board()
 
     def start_game(self):
         state = State.START_GAME
@@ -91,32 +93,25 @@ class Monopoly:
     def handle_state(self, state: State) -> State:
         match state:
             case State.START_GAME:
-                print("Starting the game ...")
-                self.board = Board()
-                nb_players = int(
-                    input("The number of players (default 2): ")
-                    or DEFAULT_NB_OF_PLAYERS
-                )
+                self.interface.initialize_game()
+                nb_players = self.interface.get_number_of_players(DEFAULT_NB_OF_PLAYERS)
                 for i in range(nb_players):
-                    player_name = input(f"Enter name for player {i + 1}: ")
+                    player_name = self.interface.get_player_name(i)
                     self.players.append(Player(player_name, DEFAULT_BALANCE, i))
-                self.die = Die()
-                print(f"Game starting with {nb_players} players ...")
+                self.interface.start_game(nb_players)
                 return State.START_TURN
             case State.START_TURN:
                 current_player = self.get_current_player()
                 current_tile = current_player.get_current_tile(self.board)
 
                 in_prison, prison_turns_left = current_player.is_in_prison()
-                print(
-                    f"""
-|++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-| Player: {current_player.name}
-| Balance: {current_player.balance}
-| Current tile: {current_tile.name}
-| Prison turns left: {prison_turns_left}
-|++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-"""
+
+                self.interface.start_turn(
+                    player_name=current_player.name,
+                    player_balance=current_player.balance,
+                    curr_tile=current_tile.name,
+                    in_prison=in_prison,
+                    prison_turns_left=prison_turns_left,
                 )
 
                 if in_prison:
@@ -186,48 +181,6 @@ class Monopoly:
                 raise ValueError(
                     f"The provided game state {state} is has not been recognized as an existing state."
                 )
-
-    def _game_loop(self):
-        assert self.board is not None, "Board has not yet been initialized"
-
-        while True:
-            current_player = self.get_current_player()
-            current_tile = current_player.get_current_tile(self.board)
-            print(
-                f"""
-                |++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-                | Player: {current_player.name}
-                | Balance: {current_player.balance}
-                | Current tile: {current_tile.name}
-                |++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-                """
-            )
-            action = input("Press any key to continue or type 'stop' to forfeit\n")
-
-            if action == "stop":
-                # TODO: Remove the player from the game
-                break
-            else:
-                # Throw the dices
-                dice_total = self.die.throw_sum(2)
-                # Next tile
-                new_tile = self.board.get_tile_at(
-                    (current_player.position + dice_total) % len(self.board)
-                )
-                print(
-                    f"The total of the dices is {dice_total}, moving towards {new_tile.name}"
-                )
-                # TODO: Check for any events (passing over go, option to buy, check against balance etc)
-
-            self.turn += 1
-        # TODO: who is the winner & their score
-        print("Game has ended!")
-        scoreboard = self.calc_score()
-        print("The following scores where achieved:")
-        for name, score in scoreboard.items():
-            print(f"{name}: {score}")
-        (name, _) = max(scoreboard.items(), key=lambda pair: pair[1])
-        print(f"{name} has won the game!")
 
     def get_current_player(self) -> Player:
         return self.players[self.turn % len(self.players)]
