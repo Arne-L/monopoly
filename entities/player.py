@@ -1,5 +1,6 @@
 from entities.tile import Tile
 from entities.cards import Card
+from entities.die import Die
 from core.board import Board
 from typing import Callable
 
@@ -45,20 +46,38 @@ class PrisonStatus:
         self.turns_left = 0
 
     @staticmethod
-    def release_options(player: Player) -> list[tuple[str, Callable[[], None]]]:
-        options: list[tuple[str, Callable[[], None]]] = []
+    def release_options(player: Player) -> list[tuple[str, Callable[[], bool]]]:
+        options: list[tuple[str, Callable[[], bool]]] = []
+        prison_status = player.prison_status
 
-        if Card.GET_OUT_OF_JAIL_FREE in player.inventory:
+        if Card.GET_OUT_OF_JAIL_FREE in player.inventory and prison_status.turns_left > 0:
+            def use_get_out_of_jail_free() -> bool:
+                player.inventory.remove(Card.GET_OUT_OF_JAIL_FREE)
+                player.prison_status.release()
+                return True
+
             options.append(
                 (
                     "Get Out of Jail Free card",
-                    lambda: player.inventory.remove(Card.GET_OUT_OF_JAIL_FREE),
+                    use_get_out_of_jail_free,
                 )
             )
+        
         if player.balance >= 50:
-            def pay_50():
+            def pay_50() -> bool:
                 player.balance -= 50
+                player.prison_status.release()
+                return True
+
             options.append(("Pay 50", pay_50))
-        options.append(("Roll dice", lambda: None))
+
+        if prison_status.turns_left > 0:
+            def roll_dices() -> bool:
+                if len(set(Die().throw(2))) == 1:
+                    player.prison_status.release()
+                    return True
+                return False
+
+            options.append(("Roll dice", roll_dices))
 
         return [(f"{i + 1} - {option[0]}", option[1]) for i, option in enumerate(options)]

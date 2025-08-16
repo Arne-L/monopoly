@@ -4,6 +4,7 @@ from entities.die import Die
 from settings import DEFAULT_NB_OF_PLAYERS, DEFAULT_BALANCE, DEFAULT_PASSING_GO_REWARD
 from enum import Enum, auto
 
+
 class State(Enum):
     START_GAME = auto()
     START_TURN = auto()
@@ -72,6 +73,7 @@ class State(Enum):
     END_GAME = auto()
     STOP = auto()
 
+
 class Monopoly:
     def __init__(
         self,
@@ -118,8 +120,16 @@ class Monopoly:
 
                 if in_prison:
                     options = PrisonStatus.release_options(current_player)
-                    prison_option = int(input(f"Choose an option to get out of jail: \n{"\n".join(map(lambda x: x[0], options))}\nOption (number): "))
-                    options[prison_option - 1][1]()
+                    prison_option = int(
+                        input(
+                            f"Choose an option to get out of jail: \n{"\n".join(map(lambda x: x[0], options))}\nOption (number): "
+                        )
+                    )
+                    is_released = options[prison_option - 1][1]()
+                    if is_released:
+                        return State.ROLL_DICE
+                    else:
+                        return State.END_TURN
 
                 action = input("Press any key to continue or type 'stop' to forfeit\n")
 
@@ -131,7 +141,7 @@ class Monopoly:
             case State.ROLL_DICE:
                 current_player = self.get_current_player()
                 # Throw the dices
-                dice_total = self.die.throw_multiple(2)
+                dice_total = self.die.throw_sum(2)
                 # Positions
                 old_position = current_player.position
                 new_position = old_position + dice_total
@@ -150,9 +160,7 @@ class Monopoly:
                 print(
                     f"The total of the dices is {dice_total}, moving towards {new_tile.name}"
                 )
-                return State.END_TURN # TODO: Update with remaining steps
-            case State.MOVE:
-                return State.END_TURN # TODO: Implement move logic
+                return State.END_TURN  # TODO: Update with remaining steps
             case State.END_TURN:
                 self.turn += 1
                 return State.START_TURN
@@ -166,7 +174,9 @@ class Monopoly:
                 print(f"{name} has won the game!")
                 return State.STOP
             case _:
-                raise ValueError(f"The provided game state {state} is has not been recognized as an existing state.")
+                raise ValueError(
+                    f"The provided game state {state} is has not been recognized as an existing state."
+                )
 
     def _game_loop(self):
         assert self.board is not None, "Board has not yet been initialized"
@@ -190,7 +200,7 @@ class Monopoly:
                 break
             else:
                 # Throw the dices
-                dice_total = self.die.throw_multiple(2)
+                dice_total = self.die.throw_sum(2)
                 # Next tile
                 new_tile = self.board.get_tile_at(
                     (current_player.position + dice_total) % len(self.board)
