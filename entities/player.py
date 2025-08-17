@@ -2,7 +2,7 @@ from entities.tile import Tile
 from entities.cards import Card
 from entities.die import Die
 from core.board import Board
-from typing import Callable
+from typing import Callable, Self
 from settings import PRISON_TILE
 
 
@@ -32,6 +32,18 @@ class Player:
                 for owned_tile in board.get_tiles_of(self.id)
             ]
         )
+    
+    def transfer_to(self, amount: int, other_player: Self) -> bool:
+        if self.balance >= amount:
+            self.balance -= amount
+            other_player.balance += amount
+            return True
+        return False
+
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, Player):
+            raise TypeError("Comparing Player with non-Player object")
+        return self.id == value.id
 
 
 class PrisonStatus:

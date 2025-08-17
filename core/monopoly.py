@@ -83,6 +83,7 @@ class Monopoly:
         self.doubles: int = 0
         self.die = Die()
         self.board = Board()
+        self.last_roll = 0 # TODO: Do we want to keep this?
 
     def start_game(self):
         state = State.START_GAME
@@ -163,7 +164,13 @@ class Monopoly:
                 print(
                     f"The total of the dices is {dice_total}, moving towards {new_tile.name}"
                 )
+                self.last_roll = dice_total
                 return State.END_TURN  # TODO: Update with remaining steps
+            case State.MOVE:
+                current_player = self.get_current_player()
+                current_tile = current_player.get_current_tile(self.board)
+                current_tile.handle_visit_of(current_player, self.board, self.last_roll)
+                return State.END_TURN
             case State.END_TURN:
                 self.turn += 1
                 self.doubles = 0
